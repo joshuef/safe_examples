@@ -161,7 +161,7 @@ app.on('ready', async () => {
       }]
     }, {
       label: 'View',
-      submenu: (process.env.NODE_ENV === 'development') ? [{
+      submenu: [{
           label: 'Reload',
           accelerator: 'Command+R',
           click() {
@@ -178,12 +178,6 @@ app.on('ready', async () => {
           accelerator: 'Alt+Command+I',
           click() {
             mainWindow.toggleDevTools();
-          }
-        }] : [{
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
-          click() {
-            mainWindow.setFullScreen(!mainWindow.isFullScreen());
           }
         }]
     }, {
@@ -314,7 +308,7 @@ app.on('ready', async () => {
         }
       });
     }
-    
+
     menu = Menu.buildFromTemplate(template);
     mainWindow.setMenu(menu);
   }
