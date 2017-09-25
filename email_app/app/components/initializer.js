@@ -9,7 +9,9 @@ const showAuthError = (appStatus) => {
   if (appStatus === APP_STATUS.AUTHORISATION_DENIED) {
     message = MESSAGES.AUTHORISATION_DENIED;
   }
-  showError('Authorisation failed', message, _ => { remote.getCurrentWindow().close(); });
+  showError('Authorisation failed', message, _ => {
+	//   remote.getCurrentWindow().close();
+  });
 };
 
 export default class Initializer extends Component {

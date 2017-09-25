@@ -36,6 +36,7 @@ const createWindow = () => {
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
     mainWindow.focus();
+	mainWindow.toggleDevTools()
   });
 
   const shouldQuit = app.makeSingleInstance(function(commandLine) {
