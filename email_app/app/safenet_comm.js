@@ -24,11 +24,19 @@ const APP_INFO = {
 };
 
 const DEVELOPMENT = 'development';
-const DEVELOPMENT_PATH = CONSTANTS.DEV_LIBPATH;
+// const DEVELOPMENT_PATH = CONSTANTS.DEV_LIB_PATH;
 const nodeEnv = process.env.NODE_ENV || DEVELOPMENT
 
 
-const libPath = nodeEnv === DEVELOPMENT ? DEVELOPMENT_PATH : CONSTANTS.ASAR_LIBPATH;
+console.log("node ennvvvv", nodeEnv);
+
+let libPath;
+
+if (nodeEnv === DEVELOPMENT) {
+  libPath = CONSTANTS.DEV_LIB_PATH;
+} else {
+  libPath = CONSTANTS.ASAR_LIB_PATH;
+}
 
 
 console.log("LIB PATTHHHHHH", libPath);
