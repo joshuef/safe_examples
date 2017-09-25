@@ -24,14 +24,14 @@ const APP_INFO = {
 };
 
 const DEVELOPMENT = 'development';
+const DEVELOPMENT_PATH = CONSTANTS.DEV_LIBPATH;
 const nodeEnv = process.env.NODE_ENV || DEVELOPMENT
 
-console.log(nodeEnv);
-// ( nodeEnv === DEVELOPMENT ) ? '' :
-const LIB_PATH = CONSTANTS.ASAR_LIB_PATH;
+
+const libPath = nodeEnv === DEVELOPMENT ? DEVELOPMENT_PATH : CONSTANTS.ASAR_LIBPATH;
 
 
-console.log("LIB PATTHHHHHH", LIB_PATH);
+console.log("LIB PATTHHHHHH", libPath);
 
 const genServiceInfo = (app, emailId) => {
   let serviceInfo = splitPublicIdAndService(emailId);
@@ -51,7 +51,7 @@ const requestShareMdAuth = (app, mdPermissions) => {
 }
 
 const requestAuth = () => {
-  return initializeApp(APP_INFO.info, null, { libPath: LIB_PATH })
+  return initializeApp(APP_INFO.info, null, { libPath })
     .then((app) => app.auth.genAuthUri(APP_INFO.permissions, APP_INFO.opts)
       .then((resp) => {
         shell.openExternal(parseUrl(resp.uri));
@@ -62,13 +62,13 @@ const requestAuth = () => {
 
 export const authApp = (netStatusCallback) => {
   if (process.env.SAFE_FAKE_AUTH) {
-    return initializeApp(APP_INFO.info, null, { libPath: LIB_PATH })
+    return initializeApp(APP_INFO.info, null, { libPath })
       .then((app) => app.auth.loginForTest(APP_INFO.permissions));
   }
 
   let uri = getAuthData();
   if (uri) {
-    return fromAuthURI(APP_INFO.info, uri, netStatusCallback, { libPath: LIB_PATH })
+    return fromAuthURI(APP_INFO.info, uri, netStatusCallback, { libPath })
       .then((registeredApp) => registeredApp.auth.refreshContainersPermissions()
         .then(() => registeredApp)
       )
@@ -84,7 +84,7 @@ export const authApp = (netStatusCallback) => {
 
 export const connect = (uri, netStatusCallback) => {
   let registeredApp;
-  return fromAuthURI(APP_INFO.info, uri, netStatusCallback, { libPath: LIB_PATH })
+  return fromAuthURI(APP_INFO.info, uri, netStatusCallback, { libPath })
     .then((app) => registeredApp = app)
     .then(() => saveAuthData(uri))
     .then(() => registeredApp.auth.refreshContainersPermissions())
