@@ -95,12 +95,14 @@ class SafeApi extends Network {
    */
   fetchPublicNames() {
     const publicNames = [];
-
+	console.log('fetching public nammessss')
     const decryptPublicName = (pubNamesCntr, encPubName) => (
       new Promise(async (resolve, reject) => {
         try {
           const decPubNameBuf = await pubNamesCntr.decrypt(encPubName);
           const decPubName = decPubNameBuf.toString();
+
+		  console.log('decrypted publicNammmmee', decPubName, decPubName.startsWith('safe://') )
           if (decPubName !== SAFE_CONSTANTS.MD_METADATA_KEY ||
             !decPubName.startsWith('safe://') ) {
             publicNames.push({
@@ -121,6 +123,7 @@ class SafeApi extends Network {
       try {
         const pubNamesCntr = await this.getPublicNamesContainer();
         const encPubNames = await pubNamesCntr.getKeys();
+		console.log('pub nanmes container keys:', encPubNames)
         if (encPubNames.length === 0) {
           return resolve([]);
         }
@@ -129,8 +132,9 @@ class SafeApi extends Network {
         for (const encPubName of encPubNames) {
             decryptPubNamesQ.push(decryptPublicName(pubNamesCntr, encPubName));
         }
-
         await Promise.all(decryptPubNamesQ);
+		console.log('publicNames being set for the app', publicNames.slice(0) )
+		console.log('publicNames being set for the app without slice', publicNames )
         this[_publicNames] = publicNames.slice(0);
         resolve(this[_publicNames]);
       } catch (err) {
@@ -221,6 +225,7 @@ class SafeApi extends Network {
    */
   fetchServices() {
     const publicNames = this[_publicNames].slice(0);
+	console.log('fetching services from', publicNames);
     const updatedPubNames = [];
 
     const updateServicePath = (service) => (
@@ -241,15 +246,23 @@ class SafeApi extends Network {
       const serviceList = [];
       return new Promise(async (resolve, reject) => {
         try {
+			console.log('attempting to fetch ', pubName);
           const pubNamesCntr = await this.getPublicNamesContainer();
+
+		  console.log('GOT PUBNAMES');
           const servCntrName = await this.getMDataValueForKey(pubNamesCntr, pubName);
 
+		  console.log('servCntrName', servCntrName)
           const servCntr = await this.getServicesContainer(servCntrName);
 
+		  console.log('servCntr', servCntr)
 			  const entries = await servCntr.getEntries();
+			  console.log('servCntr entrues', entries)
 			  const services = await entries.listEntries();
+			  console.log('servCntr entrues list', services)
 
           services.forEach((entry) => {
+			  console.log('going through each service.....')
 			const key = entry.key;
 			const value  = entry.value;
             const service = key.toString();
@@ -262,7 +275,7 @@ class SafeApi extends Network {
                 || service === SAFE_CONSTANTS.MD_METADATA_KEY) {
               return;
             }
-
+			console.log('pushing serviceeee', service)
             serviceList.push({
               name: service,
               xorname: value.buf
@@ -473,7 +486,7 @@ class SafeApi extends Network {
           if ((keyStr.indexOf(containerKey) !== 0) || keyStr === SAFE_CONSTANTS.MD_METADATA_KEY) {
             return;
           }
-          if (val.buf.length === 0) {
+          if (value.buf.length === 0) {
             return;
           }
           files.push({ path: keyStr, version: val.version });
@@ -527,7 +540,7 @@ class SafeApi extends Network {
         await filePaths.forEach((entry) => {
 			const key = entry.key;
 			const value  = entry.value;
-          if (val.buf.length === 0) {
+          if (value.buf.length === 0) {
             return;
           }
           const keyStr = key.toString();
@@ -652,12 +665,17 @@ class SafeApi extends Network {
 
   /* eslint-disable class-methods-use-this */
   getMDataValueForKey(md, key) {
+
+	  console.log('getting the MD value for a keyyyy', key)
     /* eslint-enable class-methods-use-this */
     return new Promise(async (resolve, reject) => {
       try {
         const encKey = await md.encryptKey(key);
+		console.log('encrypted', encKey)
         const value = await md.get(encKey);
+		console.log('value', value)
         const result = await md.decrypt(value.buf);
+		console.log('result', result)
         resolve(result);
       } catch (err) {
         reject(err);
