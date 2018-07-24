@@ -103,7 +103,7 @@ class SafeApi extends Network {
           const decPubName = decPubNameBuf.toString();
 
 		  console.log('decrypted publicNammmmee', decPubName, decPubName.startsWith('safe://') )
-          if (decPubName !== SAFE_CONSTANTS.MD_METADATA_KEY ||
+          if (decPubName !== SAFE_CONSTANTS.MD_METADATA_KEY &&
             !decPubName.startsWith('safe://') ) {
             publicNames.push({
               name: decPubName
